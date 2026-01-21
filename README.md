@@ -1,21 +1,11 @@
+# requireAuth Middleware
 
 ## Need / problem
 In a game API you should not allow anonymous users to create games or send moves.
-Without a check, anyone can call the endpoints directly.
+Without an authentication check, anyone can call protected endpoints directly.
 
 ## Solution
 `requireAuth` is an Express middleware that blocks requests unless the user is authenticated.
-
-## Usage
-```js
-import express from "express";
-import { requireAuth } from "./src/requireAuth.js";
-
-const app = express();
-
-app.use("/api", requireAuth);
-
-# requireAuth Middleware
 
 ## Purpose
 This middleware is used to protect routes that require an authenticated user.
@@ -29,18 +19,27 @@ This middleware centralizes authentication checks and ensures consistent access 
 
 ## How it works
 The middleware checks if `req.user` exists.
-If not, it returns HTTP 401 Unauthorized.
-If the user exists, the request continues to the next handler.
+
+- If `req.user` does not exist, it returns HTTP 401 Unauthorized.
+- If `req.user` exists, the request continues to the next handler.
+
+The middleware assumes authentication has already happened earlier in the request flow
+(for example via session or token-based authentication).
 
 ## Example usage
 
 ```js
-const express = require("express");
-const { requireAuth } = require("./index");
+import express from "express";
+import { requireAuth } from "./src/requireAuth.js";
 
 const app = express();
 
-app.get("/protected", requireAuth, (req, res) => {
+app.use("/api", requireAuth);
+
+app.get("/api/protected", (req, res) => {
   res.json({ message: "You are authenticated" });
 });
 
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
