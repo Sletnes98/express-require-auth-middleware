@@ -1,3 +1,4 @@
+
 ## Need / problem
 In a game API you should not allow anonymous users to create games or send moves.
 Without a check, anyone can call the endpoints directly.
@@ -42,3 +43,4 @@ const app = express();
 app.get("/protected", requireAuth, (req, res) => {
   res.json({ message: "You are authenticated" });
 });
+
